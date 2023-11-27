@@ -1,4 +1,4 @@
-![Building Solutions for Developers to Create Software](./profile/banner.webp)
+![Building Solutions for Developers to Create Software](./banner.webp)
 
 ## Building Solutions for Developers to Create Software
 
