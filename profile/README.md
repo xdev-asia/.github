@@ -2,30 +2,52 @@
 
 # xDev
 
-Local-first project knowledge for humans and AI agents. **[xdev.asia](https://xdev.asia)**
+Local-first agentic IDE. **[xdev.asia](https://xdev.asia)**
 
-Your Markdown docs stay the source of truth. xDev indexes them, flags docs that went stale after code changed, hands the right context to coding agents (Claude Code, Codex, Gemini CLI, Cursor) over files and MCP, and runs agent tasks in their own git worktrees so nothing lands without your review.
+Run Claude Code, Codex, Gemini CLI and other coding agents side by side, each in its own git worktree and its own terminal. Review every diff before it lands. Your docs and project context reach the agents over files and MCP, so they read less and guess less.
 
-> Status: early preview. Builds are unsigned; expect breaking changes.
+> Status: early preview (0.5). Builds are unsigned; expect breaking changes.
+
+## What you get
+
+- **Worktrees and tabs.** One worktree per task, with setup scripts, panes and tabs you can split and restore.
+- **Agents in real terminals.** The agent CLIs you already use, with live status, notifications and per-account usage.
+- **Review and git.** Per-file diffs, review notes, commit, pull requests.
+- **Context.** Markdown docs indexed locally (full text and vectors), stale-doc checks, `AGENTS.md` / `CLAUDE.md` export and an MCP server.
+
+## Architecture
+
+```mermaid
+flowchart LR
+  UI[Desktop app<br/>Tauri 2 + React] --> Host[Rust host]
+  Host --> WS[worktrees<br/>xdev-workspace]
+  Host --> PTY[terminals<br/>xdev-pty]
+  PTY --> Agents[Claude Code · Codex · Gemini CLI · shell]
+  Agents -->|MCP| CLI[xdev CLI]
+  CLI --> Core[xdev-core: docs, SQLite index, git, export]
+  Host --> Core
+```
+
+Full map: [xdev/docs/architecture.md](https://github.com/xdev-asia/xdev/blob/main/docs/architecture.md). Decisions: [xdev/docs/adr](https://github.com/xdev-asia/xdev/tree/main/docs/adr).
 
 ## Repositories
 
 | Repo | What | Status |
 |---|---|---|
-| [xdev](https://github.com/xdev-asia/xdev) | Rust core, `xdev` CLI, desktop app (Tauri 2), architecture decisions | Active |
-| [registry](https://github.com/xdev-asia/registry) | Signed index of app packs the desktop app can install, plus a block list | Placeholder |
+| [xdev](https://github.com/xdev-asia/xdev) | The IDE: Rust crates, `xdev` CLI, desktop app (Tauri 2), architecture decisions | Active |
 | [site](https://github.com/xdev-asia/site) | Website at [xdev.asia](https://xdev.asia) (Next.js, static export) | Active |
+| [registry](https://github.com/xdev-asia/registry) | Signed index of app packs the desktop app can install, plus a block list | Placeholder |
 
 ## Get it
 
-Installers for Windows (x64, ARM64), macOS (Apple silicon, Intel) and Linux (x64, ARM64) are on the [xdev releases page](https://github.com/xdev-asia/xdev/releases). The app updates itself when a new version ships.
+Installers for Windows (x64, ARM64), macOS (Apple silicon) and Linux (x64, ARM64) are on the [xdev releases page](https://github.com/xdev-asia/xdev/releases). The app updates itself when a new version ships.
 
 ## Principles
 
-- Files you own come first: Markdown in your repo, SQLite only as an index.
-- Works offline; AI is optional and you choose the provider.
-- Agents act through tasks you can review, with a policy you own.
-- Plugins run sandboxed and reach data only through `xdev-api`.
+- Local first: your code, docs and sessions stay on your machine.
+- Bring your own agents and accounts; xDev does not resell models.
+- Agents work in worktrees; nothing reaches your branch without your review.
+- Policy is checked by the app, not by a prompt.
 
 ## License
 
