@@ -19,16 +19,18 @@ Run Claude Code, Codex, Gemini CLI and other coding agents side by side, each in
 
 ```mermaid
 flowchart LR
-  UI[Desktop app<br/>Tauri 2 + React] --> Host[Rust host]
-  Host --> WS[worktrees<br/>xdev-workspace]
-  Host --> PTY[terminals<br/>xdev-pty]
-  PTY --> Agents[Claude Code · Codex · Gemini CLI · shell]
+  UI["Desktop app: Tauri 2 + React"] --> Host[Rust host]
+  Host --> WS["worktrees: xdev-workspace"]
+  Host <-->|"local socket or pipe + token: xdev-ipc"| PTYD["terminal service: xdev-ptyd"]
+  Host --> Acc["active account per provider: xdev-ai"]
+  PTYD --> Agents["Claude Code, Codex, Gemini CLI, shell"]
+  Acc -.->|config dir| Agents
   Agents -->|MCP| CLI[xdev CLI]
-  CLI --> Core[xdev-core: docs, SQLite index, git, export]
+  CLI --> Core["xdev-core: docs, SQLite index, git, export"]
   Host --> Core
 ```
 
-Full map: [xdev/docs/architecture.md](https://github.com/xdev-asia/xdev/blob/main/docs/architecture.md). Decisions: [xdev/docs/adr](https://github.com/xdev-asia/xdev/tree/main/docs/adr).
+Terminals live in the `xdev-ptyd` service, so sessions survive an app restart. Full map: [xdev/docs/architecture.md](https://github.com/xdev-asia/xdev/blob/main/docs/architecture.md). Decisions: [xdev/docs/adr](https://github.com/xdev-asia/xdev/tree/main/docs/adr).
 
 ## Repositories
 
