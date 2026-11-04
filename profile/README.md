@@ -45,7 +45,7 @@ Installers for Windows (x64, ARM64), macOS (Apple silicon) and Linux (x64, ARM64
 ## Principles
 
 - Local first: your code, docs and sessions stay on your machine.
-- Bring your own agents and accounts; xDev does not resell models.
+- Bring your own agent CLIs and accounts.
 - Agents work in worktrees; nothing reaches your branch without your review.
 - Policy is checked by the app, not by a prompt.
 
